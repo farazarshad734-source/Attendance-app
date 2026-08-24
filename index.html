@@ -1,190 +1,1661 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Employee Attendance</title>
 
+
   <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
     body {
       font-family: Arial, sans-serif;
       background: #f2f4f7;
       margin: 0;
       padding: 20px;
+      color: #222;
     }
 
+
     .container {
-      max-width: 500px;
+      max-width: 1000px;
       margin: auto;
       background: white;
       padding: 25px;
       border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
+
 
     h1 {
       text-align: center;
-      color: #222;
+      margin-bottom: 25px;
     }
 
-    input {
-      width: 100%;
-      padding: 12px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      font-size: 16px;
+
+    /* DATE */
+
+    .date-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 25px;
+      font-weight: bold;
     }
+
+
+    .date-box input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: 15px;
+    }
+
+
+    /* EMPLOYEE CARD */
+
+    .employee {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 15px;
+      background: #fafafa;
+    }
+
+
+    .employee-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+
+    .name {
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+
+    /* STATUS */
+
+    .status {
+      font-weight: bold;
+      padding: 7px 14px;
+      border-radius: 20px;
+    }
+
+
+    .present {
+      color: #198754;
+      background: #d1e7dd;
+    }
+
+
+    .late {
+      color: #b76e00;
+      background: #fff3cd;
+    }
+
+
+    .absent {
+      color: #dc3545;
+      background: #f8d7da;
+    }
+
+
+    .not-marked {
+      color: #666;
+      background: #e9ecef;
+    }
+
+
+    /* TIMES */
+
+    .times {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+
+    .time-box {
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      min-width: 160px;
+      flex: 1;
+    }
+
+
+    .time-label {
+      display: block;
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 5px;
+    }
+
+
+    .time-value {
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+
+    /* BUTTONS */
 
     button {
       border: none;
-      padding: 10px 15px;
+      padding: 10px 17px;
       border-radius: 7px;
       cursor: pointer;
       color: white;
       font-size: 14px;
-      margin: 3px;
+      margin-right: 5px;
     }
 
-    .add {
-      background: #007bff;
-      width: 100%;
+
+    button:hover {
+      opacity: 0.9;
     }
 
-    .present {
-      background: #28a745;
+
+    .time-in {
+      background: #198754;
     }
 
-    .absent {
+
+    .time-out {
       background: #dc3545;
     }
 
-    .reset {
-      background: #555;
+
+    /* SUMMARY */
+
+    .summary {
+      margin-top: 25px;
+      padding: 18px;
+      background: #f8f9fa;
+      border-radius: 10px;
+
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+
+      gap: 15px;
+
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+
+    /* HISTORY */
+
+    .history-section {
+      margin-top: 35px;
+    }
+
+
+    .history-section h2 {
+      margin-bottom: 15px;
+    }
+
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+
+    .history-table {
       width: 100%;
+      border-collapse: collapse;
+      min-width: 750px;
+    }
+
+
+    .history-table th,
+    .history-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+
+    .history-table th {
+      background: #f1f3f5;
+    }
+
+
+    .empty {
+      text-align: center;
+      color: #777;
+      padding: 20px;
+    }
+
+
+    /* DELETE BUTTON */
+
+    .clear-history {
+      background: #343a40;
       margin-top: 15px;
     }
 
-    .employee {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      padding: 12px 0;
-      border-bottom: 1px solid #ddd;
-    }
 
-    .name {
+    /* MESSAGE */
+
+    .message {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
       font-weight: bold;
-      margin-right: 10px;
     }
 
-    .counts {
-      text-align: center;
-      margin: 15px 0;
-      font-size: 16px;
+
+    .success-message {
+      background: #d1e7dd;
+      color: #0f5132;
     }
+
+
+    .warning-message {
+      background: #fff3cd;
+      color: #664d03;
+    }
+
+
+    /* MOBILE */
+
+    @media (max-width: 600px) {
+
+      body {
+        padding: 10px;
+      }
+
+
+      .container {
+        padding: 15px;
+      }
+
+
+      .date-box {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+
+      .date-box input {
+        width: 100%;
+      }
+
+
+      .times {
+        flex-direction: column;
+      }
+
+
+      .time-box {
+        width: 100%;
+      }
+
+
+      button {
+        margin-bottom: 5px;
+      }
+
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
+
   <div class="container">
-    <h1>Employee Attendance</h1>
 
-    <input type="text" id="employeeName" placeholder="Enter Employee Name">
-    <button class="add" onclick="addEmployee()">Add Employee</button>
 
-    <div class="counts">
-      Present: <b id="presentCount">0</b> |
-      Absent: <b id="absentCount">0</b>
+    <h1>
+      Employee Attendance
+    </h1>
+
+
+    <!-- DATE -->
+
+    <div class="date-box">
+
+      <label for="attendanceDate">
+        Attendance Date:
+      </label>
+
+      <input
+        type="date"
+        id="attendanceDate"
+        onchange="loadSelectedDate()"
+      >
+
     </div>
+
+
+    <!-- MESSAGE -->
+
+    <div
+      id="message"
+      class="message"
+    ></div>
+
+
+    <!-- EMPLOYEES -->
 
     <div id="employeeList"></div>
 
-    <button class="reset" onclick="resetAttendance()">Reset Attendance</button>
+
+    <!-- SUMMARY -->
+
+    <div class="summary">
+
+      <div>
+        Present:
+        <span id="presentCount">0</span>
+      </div>
+
+
+      <div>
+        Late:
+        <span id="lateCount">0</span>
+      </div>
+
+
+      <div>
+        Absent:
+        <span id="absentCount">0</span>
+      </div>
+
+
+      <div>
+        Total:
+        <span id="totalCount">3</span>
+      </div>
+
+    </div>
+
+
+    <!-- HISTORY -->
+
+    <div class="history-section">
+
+
+      <h2>
+        Attendance History
+      </h2>
+
+
+      <div class="table-container">
+
+        <table class="history-table">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Date
+              </th>
+
+              <th>
+                Employee
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Scheduled In
+              </th>
+
+              <th>
+                Actual In
+              </th>
+
+              <th>
+                Actual Out
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody id="historyTable">
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <button
+        class="clear-history"
+        onclick="clearAllHistory()"
+      >
+        Clear All Records
+      </button>
+
+
+    </div>
+
+
   </div>
 
+
   <script>
-    let employees = [];
 
-    function addEmployee() {
-      const input = document.getElementById("employeeName");
-      const name = input.value.trim();
 
-      if (name === "") {
-        alert("Please enter employee name");
-        return;
+    /*
+    ==================================================
+    FIXED EMPLOYEES
+    ==================================================
+    */
+
+
+    const employees = [
+
+      {
+        id: 1,
+        name: "M FARAZ",
+        shiftStart: "19:00",
+        shiftStartDisplay: "7:00 PM",
+        shiftEnd: "03:00",
+        shiftEndDisplay: "3:00 AM"
+      },
+
+
+      {
+        id: 2,
+        name: "MIRZA BABAR",
+        shiftStart: "19:00",
+        shiftStartDisplay: "7:00 PM",
+        shiftEnd: "03:00",
+        shiftEndDisplay: "3:00 AM"
+      },
+
+
+      {
+        id: 3,
+        name: "SHAHWAIZ",
+        shiftStart: "20:00",
+        shiftStartDisplay: "8:00 PM",
+        shiftEnd: "03:00",
+        shiftEndDisplay: "3:00 AM"
       }
 
-      employees.push({
-        name: name,
-        status: ""
-      });
+    ];
 
-      input.value = "";
-      displayEmployees();
+
+    /*
+    ==================================================
+    LOAD SAVED DATA
+    ==================================================
+    */
+
+
+    let attendanceData =
+      JSON.parse(
+        localStorage.getItem(
+          "attendanceData"
+        )
+      ) || {};
+
+
+    /*
+    ==================================================
+    GET TODAY
+    ==================================================
+    */
+
+
+    function getToday() {
+
+      const now = new Date();
+
+
+      const year =
+        now.getFullYear();
+
+
+      const month =
+        String(
+          now.getMonth() + 1
+        ).padStart(2, "0");
+
+
+      const day =
+        String(
+          now.getDate()
+        ).padStart(2, "0");
+
+
+      return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+      );
+
     }
 
-    function markAttendance(index, status) {
-      employees[index].status = status;
-      displayEmployees();
+
+    /*
+    ==================================================
+    GET CURRENT TIME
+    ==================================================
+    */
+
+
+    function getCurrentTime() {
+
+      const now = new Date();
+
+
+      let hours =
+        now.getHours();
+
+
+      const minutes =
+        String(
+          now.getMinutes()
+        ).padStart(2, "0");
+
+
+      const seconds =
+        String(
+          now.getSeconds()
+        ).padStart(2, "0");
+
+
+      const ampm =
+        hours >= 12
+          ? "PM"
+          : "AM";
+
+
+      hours =
+        hours % 12 || 12;
+
+
+      return (
+        String(hours).padStart(2, "0") +
+        ":" +
+        minutes +
+        ":" +
+        seconds +
+        " " +
+        ampm
+      );
+
     }
+
+
+    /*
+    ==================================================
+    CONVERT HH:MM TO MINUTES
+    ==================================================
+    */
+
+
+    function timeToMinutes(time) {
+
+      const parts =
+        time.split(":");
+
+
+      const hours =
+        parseInt(parts[0]);
+
+
+      const minutes =
+        parseInt(parts[1]);
+
+
+      return (
+        hours * 60 +
+        minutes
+      );
+
+    }
+
+
+    /*
+    ==================================================
+    GET CURRENT MINUTES
+    ==================================================
+    */
+
+
+    function getCurrentMinutes() {
+
+      const now = new Date();
+
+
+      return (
+        now.getHours() * 60 +
+        now.getMinutes()
+      );
+
+    }
+
+
+    /*
+    ==================================================
+    GET STATUS
+    ==================================================
+
+    Before or exactly at shift start:
+    PRESENT
+
+    After shift start:
+    LATE
+
+    No Time In:
+    ABSENT
+
+    ==================================================
+    */
+
+
+    function calculateStatus(employee) {
+
+      const currentMinutes =
+        getCurrentMinutes();
+
+
+      const scheduledMinutes =
+        timeToMinutes(
+          employee.shiftStart
+        );
+
+
+      if (
+        currentMinutes <=
+        scheduledMinutes
+      ) {
+
+        return "Present";
+
+      }
+
+
+      return "Late";
+
+    }
+
+
+    /*
+    ==================================================
+    SAVE DATA
+    ==================================================
+    */
+
+
+    function saveData() {
+
+      localStorage.setItem(
+        "attendanceData",
+        JSON.stringify(
+          attendanceData
+        )
+      );
+
+    }
+
+
+    /*
+    ==================================================
+    SHOW MESSAGE
+    ==================================================
+    */
+
+
+    function showMessage(
+      text,
+      type = "success"
+    ) {
+
+      const message =
+        document.getElementById(
+          "message"
+        );
+
+
+      message.textContent =
+        text;
+
+
+      message.style.display =
+        "block";
+
+
+      if (
+        type === "warning"
+      ) {
+
+        message.className =
+          "message warning-message";
+
+      }
+      else {
+
+        message.className =
+          "message success-message";
+
+      }
+
+
+      setTimeout(
+        function () {
+
+          message.style.display =
+            "none";
+
+        },
+        3000
+      );
+
+    }
+
+
+    /*
+    ==================================================
+    TIME IN
+    ==================================================
+    */
+
+
+    function timeIn(employeeId) {
+
+      const date =
+        document.getElementById(
+          "attendanceDate"
+        ).value;
+
+
+      const employee =
+        employees.find(
+          function(emp) {
+
+            return (
+              emp.id ===
+              employeeId
+            );
+
+          }
+        );
+
+
+      if (!employee) {
+
+        return;
+
+      }
+
+
+      /*
+      If no date selected
+      */
+
+      if (!date) {
+
+        alert(
+          "Please select attendance date."
+        );
+
+        return;
+
+      }
+
+
+      /*
+      Prevent duplicate Time In
+      */
+
+      if (
+        attendanceData[date] &&
+        attendanceData[date][employeeId] &&
+        attendanceData[date][employeeId].timeIn
+      ) {
+
+        alert(
+          employee.name +
+          " already has Time In recorded."
+        );
+
+        return;
+
+      }
+
+
+      /*
+      Create date object
+      */
+
+      if (!attendanceData[date]) {
+
+        attendanceData[date] = {};
+
+      }
+
+
+      /*
+      Get actual current time
+      */
+
+      const actualTime =
+        getCurrentTime();
+
+
+      /*
+      Calculate status based
+      on current time
+      */
+
+      const status =
+        calculateStatus(
+          employee
+        );
+
+
+      /*
+      Save attendance
+      */
+
+      attendanceData[date][employeeId] = {
+
+        status: status,
+
+        scheduledTimeIn:
+          employee.shiftStartDisplay,
+
+        scheduledTimeOut:
+          employee.shiftEndDisplay,
+
+        timeIn:
+          actualTime,
+
+        timeOut:
+          ""
+
+      };
+
+
+      /*
+      Save in browser
+      */
+
+      saveData();
+
+
+      /*
+      Refresh UI
+      */
+
+      displayEmployees();
+
+      displayHistory();
+
+
+      /*
+      Message
+      */
+
+      if (
+        status === "Late"
+      ) {
+
+        showMessage(
+          employee.name +
+          " marked LATE at " +
+          actualTime,
+          "warning"
+        );
+
+      }
+      else {
+
+        showMessage(
+          employee.name +
+          " marked PRESENT at " +
+          actualTime
+        );
+
+      }
+
+    }
+
+
+    /*
+    ==================================================
+    TIME OUT
+    ==================================================
+    */
+
+
+    function timeOut(employeeId) {
+
+      const date =
+        document.getElementById(
+          "attendanceDate"
+        ).value;
+
+
+      const employee =
+        employees.find(
+          function(emp) {
+
+            return (
+              emp.id ===
+              employeeId
+            );
+
+          }
+        );
+
+
+      if (!employee) {
+
+        return;
+
+      }
+
+
+      /*
+      Check Time In
+      */
+
+      if (
+        !attendanceData[date] ||
+        !attendanceData[date][employeeId] ||
+        !attendanceData[date][employeeId].timeIn
+      ) {
+
+        alert(
+          "Please mark Time In first."
+        );
+
+        return;
+
+      }
+
+
+      /*
+      Prevent duplicate Time Out
+      */
+
+      if (
+        attendanceData[date][employeeId].timeOut
+      ) {
+
+        alert(
+          employee.name +
+          " already has Time Out recorded."
+        );
+
+        return;
+
+      }
+
+
+      /*
+      Actual Time Out
+      */
+
+      const actualTimeOut =
+        getCurrentTime();
+
+
+      /*
+      Save Time Out
+      */
+
+      attendanceData[date][employeeId].timeOut =
+        actualTimeOut;
+
+
+      /*
+      Save
+      */
+
+      saveData();
+
+
+      /*
+      Refresh
+      */
+
+      displayEmployees();
+
+      displayHistory();
+
+
+      showMessage(
+        employee.name +
+        " Time Out recorded at " +
+        actualTimeOut
+      );
+
+    }
+
+
+    /*
+    ==================================================
+    DISPLAY EMPLOYEES
+    ==================================================
+    */
+
 
     function displayEmployees() {
-      const list = document.getElementById("employeeList");
+
+      const date =
+        document.getElementById(
+          "attendanceDate"
+        ).value;
+
+
+      const list =
+        document.getElementById(
+          "employeeList"
+        );
+
+
       list.innerHTML = "";
 
-      employees.forEach((employee, index) => {
-        const div = document.createElement("div");
-        div.className = "employee";
 
-        div.innerHTML = `
-          <span class="name">${employee.name}</span>
+      employees.forEach(
+        function(employee) {
 
-          <div>
-            <button class="present" onclick="markAttendance(${index}, 'Present')">
-              Present
+
+          const record =
+            attendanceData[date]?.[
+              employee.id
+            ];
+
+
+          /*
+          If no Time In:
+          Employee is Absent
+          */
+
+          let status =
+            "Absent";
+
+
+          if (
+            record &&
+            record.timeIn
+          ) {
+
+            status =
+              record.status;
+
+          }
+
+
+          /*
+          Status CSS class
+          */
+
+          let statusClass =
+            "absent";
+
+
+          if (
+            status === "Present"
+          ) {
+
+            statusClass =
+              "present";
+
+          }
+
+
+          if (
+            status === "Late"
+          ) {
+
+            statusClass =
+              "late";
+
+          }
+
+
+          /*
+          Actual Time In
+          */
+
+          const actualTimeIn =
+            record?.timeIn ||
+            "--";
+
+
+          /*
+          Actual Time Out
+          */
+
+          const actualTimeOut =
+            record?.timeOut ||
+            "--";
+
+
+          /*
+          Create employee card
+          */
+
+          const div =
+            document.createElement(
+              "div"
+            );
+
+
+          div.className =
+            "employee";
+
+
+          div.innerHTML = `
+
+            <div class="employee-header">
+
+              <span class="name">
+
+                ${employee.name}
+
+              </span>
+
+
+              <span class="status ${statusClass}">
+
+                ${status}
+
+              </span>
+
+            </div>
+
+
+            <div class="times">
+
+
+              <div class="time-box">
+
+                <span class="time-label">
+
+                  Scheduled Time In
+
+                </span>
+
+                <span class="time-value">
+
+                  ${employee.shiftStartDisplay}
+
+                </span>
+
+              </div>
+
+
+              <div class="time-box">
+
+                <span class="time-label">
+
+                  Scheduled Time Out
+
+                </span>
+
+                <span class="time-value">
+
+                  ${employee.shiftEndDisplay}
+
+                </span>
+
+              </div>
+
+
+              <div class="time-box">
+
+                <span class="time-label">
+
+                  Actual Time In
+
+                </span>
+
+                <span class="time-value">
+
+                  ${actualTimeIn}
+
+                </span>
+
+              </div>
+
+
+              <div class="time-box">
+
+                <span class="time-label">
+
+                  Actual Time Out
+
+                </span>
+
+                <span class="time-value">
+
+                  ${actualTimeOut}
+
+                </span>
+
+              </div>
+
+
+            </div>
+
+
+            <button
+              class="time-in"
+              onclick="timeIn(${employee.id})"
+            >
+
+              Time In
+
             </button>
 
-            <button class="absent" onclick="markAttendance(${index}, 'Absent')">
-              Absent
+
+            <button
+              class="time-out"
+              onclick="timeOut(${employee.id})"
+            >
+
+              Time Out
+
             </button>
-          </div>
 
-          <span>
-            ${employee.status}
-          </span>
-        `;
 
-        list.appendChild(div);
-      });
+          `;
 
-      updateCounts();
+
+          list.appendChild(div);
+
+
+        }
+      );
+
+
+      updateSummary();
+
     }
 
-    function updateCounts() {
+
+    /*
+    ==================================================
+    SUMMARY
+    ==================================================
+    */
+
+
+    function updateSummary() {
+
+      const date =
+        document.getElementById(
+          "attendanceDate"
+        ).value;
+
+
       let present = 0;
+
+      let late = 0;
+
       let absent = 0;
 
-      employees.forEach(employee => {
-        if (employee.status === "Present") present++;
-        if (employee.status === "Absent") absent++;
-      });
 
-      document.getElementById("presentCount").textContent = present;
-      document.getElementById("absentCount").textContent = absent;
+      employees.forEach(
+        function(employee) {
+
+
+          const record =
+            attendanceData[date]?.[
+              employee.id
+            ];
+
+
+          /*
+          No Time In = Absent
+          */
+
+          if (
+            !record ||
+            !record.timeIn
+          ) {
+
+            absent++;
+
+          }
+
+
+          else if (
+            record.status ===
+            "Present"
+          ) {
+
+            present++;
+
+          }
+
+
+          else if (
+            record.status ===
+            "Late"
+          ) {
+
+            late++;
+
+          }
+
+        }
+      );
+
+
+      document.getElementById(
+        "presentCount"
+      ).textContent =
+        present;
+
+
+      document.getElementById(
+        "lateCount"
+      ).textContent =
+        late;
+
+
+      document.getElementById(
+        "absentCount"
+      ).textContent =
+        absent;
+
+
+      document.getElementById(
+        "totalCount"
+      ).textContent =
+        employees.length;
+
     }
 
-    function resetAttendance() {
-      employees.forEach(employee => {
-        employee.status = "";
-      });
+
+    /*
+    ==================================================
+    ATTENDANCE HISTORY
+    ==================================================
+    */
+
+
+    function displayHistory() {
+
+      const table =
+        document.getElementById(
+          "historyTable"
+        );
+
+
+      table.innerHTML = "";
+
+
+      /*
+      Get saved dates
+      */
+
+      const dates =
+        Object.keys(
+          attendanceData
+        )
+        .sort()
+        .reverse();
+
+
+      /*
+      No records
+      */
+
+      if (
+        dates.length === 0
+      ) {
+
+        table.innerHTML = `
+
+          <tr>
+
+            <td
+              colspan="6"
+              class="empty"
+            >
+
+              No attendance records yet.
+
+            </td>
+
+          </tr>
+
+        `;
+
+        return;
+
+      }
+
+
+      /*
+      Display each date
+      */
+
+      dates.forEach(
+        function(date) {
+
+
+          /*
+          Display each employee
+          */
+
+          employees.forEach(
+            function(employee) {
+
+
+              const record =
+                attendanceData[
+                  date
+                ]?.[
+                  employee.id
+                ];
+
+
+              /*
+              If employee did not
+              have a record for date,
+              show Absent as well.
+              */
+
+              let status =
+                "Absent";
+
+
+              let actualTimeIn =
+                "--";
+
+
+              let actualTimeOut =
+                "--";
+
+
+              if (
+                record &&
+                record.timeIn
+              ) {
+
+                status =
+                  record.status;
+
+
+                actualTimeIn =
+                  record.timeIn;
+
+
+                actualTimeOut =
+                  record.timeOut ||
+                  "--";
+
+              }
+
+
+              /*
+              Create table row
+              */
+
+              const row =
+                document.createElement(
+                  "tr"
+                );
+
+
+              row.innerHTML = `
+
+                <td>
+
+                  ${date}
+
+                </td>
+
+
+                <td>
+
+                  ${employee.name}
+
+                </td>
+
+
+                <td>
+
+                  ${status}
+
+                </td>
+
+
+                <td>
+
+                  ${employee.shiftStartDisplay}
+
+                </td>
+
+
+                <td>
+
+                  ${actualTimeIn}
+
+                </td>
+
+
+                <td>
+
+                  ${actualTimeOut}
+
+                </td>
+
+              `;
+
+
+              table.appendChild(
+                row
+              );
+
+
+            }
+          );
+
+
+        }
+      );
+
+    }
+
+
+    /*
+    ==================================================
+    CLEAR ALL RECORDS
+    ==================================================
+    */
+
+
+    function clearAllHistory() {
+
+      const confirmation =
+        confirm(
+          "Are you sure you want to delete ALL attendance records?"
+        );
+
+
+      if (!confirmation) {
+
+        return;
+
+      }
+
+
+      attendanceData = {};
+
+
+      localStorage.removeItem(
+        "attendanceData"
+      );
+
 
       displayEmployees();
+
+      displayHistory();
+
+
+      showMessage(
+        "All attendance records have been deleted."
+      );
+
     }
+
+
+    /*
+    ==================================================
+    INITIALIZE APP
+    ==================================================
+    */
+
+
+    document.getElementById(
+      "attendanceDate"
+    ).value =
+      getToday();
+
+
+    displayEmployees();
+
+    displayHistory();
+
+
   </script>
 
+
 </body>
+
 </html>
