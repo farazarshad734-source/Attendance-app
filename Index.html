@@ -1,424 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Attendance App</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Attendance</title>
 
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f3f6fb;color:#172033}
-.header{background:#2563eb;color:white;padding:25px 20px;border-radius:0 0 25px 25px}
-.header h1{margin:0;font-size:25px}
-.header p{margin:6px 0 0;opacity:.9}
-.container{max-width:600px;margin:auto;padding:20px;padding-bottom:90px}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:white;padding:18px;border-radius:16px;box-shadow:0 3px 12px #00000010}
-.card small{color:#64748b;font-weight:bold}
-.card h2{margin:8px 0 0;font-size:28px}
-.blue{border-left:5px solid #2563eb}
-.green{border-left:5px solid #16a34a}
-.orange{border-left:5px solid #f97316}
-.red{border-left:5px solid #dc2626}
-.section{background:white;margin-top:18px;padding:18px;border-radius:18px;box-shadow:0 3px 12px #00000010}
-.section h3{margin-top:0}
-input{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;font-size:17px;margin-bottom:12px}
-button{width:100%;padding:14px;border:0;border-radius:10px;background:#2563eb;color:white;font-size:16px;font-weight:bold}
-.page{display:none}
-.page.active{display:block}
-.person{padding:14px 0;border-bottom:1px solid #eee}
-.person:last-child{border-bottom:0}
-.person-name{font-weight:bold;font-size:17px}
-.info{color:#64748b;font-size:14px;margin-top:5px}
-.status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:12px;font-weight:bold;margin-top:7px}
-.present{background:#dcfce7;color:#15803d}
-.late{background:#ffedd5;color:#c2410c}
-.absent{background:#fee2e2;color:#b91c1c}
-.success{background:#dcfce7;color:#166534;padding:14px;border-radius:10px;margin-top:12px}
-.warning{background:#fef3c7;color:#92400e;padding:14px;border-radius:10px;margin-top:12px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #ddd;display:grid;grid-template-columns:repeat(4,1fr);padding:7px}
-.nav button{background:white;color:#64748b;font-size:11px;padding:8px 2px}
-.nav button.active{color:#2563eb}
-</style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f4f7;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #222;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      border: none;
+      padding: 10px 15px;
+      border-radius: 7px;
+      cursor: pointer;
+      color: white;
+      font-size: 14px;
+      margin: 3px;
+    }
+
+    .add {
+      background: #007bff;
+      width: 100%;
+    }
+
+    .present {
+      background: #28a745;
+    }
+
+    .absent {
+      background: #dc3545;
+    }
+
+    .reset {
+      background: #555;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .employee {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 12px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .name {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .counts {
+      text-align: center;
+      margin: 15px 0;
+      font-size: 16px;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="header">
-<h1>📋 Attendance App</h1>
-<p id="date"></p>
-</div>
-
-<div class="container">
-
-<!-- DASHBOARD -->
-<div id="dashboard" class="page active">
-
-<div class="cards">
-<div class="card blue">
-<small>TOTAL</small>
-<h2 id="total">3</h2>
-</div>
-
-<div class="card green">
-<small>PRESENT</small>
-<h2 id="present">0</h2>
-</div>
-
-<div class="card orange">
-<small>LATE</small>
-<h2 id="late">0</h2>
-</div>
-
-<div class="card red">
-<small>ABSENT</small>
-<h2 id="absent">3</h2>
-</div>
-</div>
-
-<div class="section">
-<h3>Today's Attendance</h3>
-<div id="dashboardList"></div>
-</div>
-
-</div>
-
-
-<!-- MARK ATTENDANCE -->
-<div id="mark" class="page">
-
-<div class="section">
-<h3>✓ Mark Attendance</h3>
-
-<p style="color:#64748b">
-Personal code enter karein.
-</p>
-
-<input id="code" type="number" placeholder="Example: 1001">
-
-<button onclick="markAttendance()">
-CHECK ATTENDANCE
-</button>
-
-<div id="message"></div>
-</div>
-
-</div>
-
-
-<!-- TODAY -->
-<div id="today" class="page">
-
-<div class="section">
-<h3>📋 Today's Attendance</h3>
-<div id="todayList"></div>
-</div>
-
-</div>
-
-
-<!-- MONTHLY -->
-<div id="monthly" class="page">
-
-<div class="section">
-<h3>📊 Monthly Report</h3>
-<p id="monthTitle"></p>
-<div id="monthlyList"></div>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- NAVIGATION -->
-<div class="nav">
-
-<button onclick="showPage('dashboard')" id="navDashboard">
-🏠<br>Dashboard
-</button>
-
-<button onclick="showPage('mark')" id="navMark">
-✓<br>Attendance
-</button>
-
-<button onclick="showPage('today')" id="navToday">
-📋<br>Today
-</button>
-
-<button onclick="showPage('monthly')" id="navMonthly">
-📊<br>Report
-</button>
-
-</div>
-
-
-<script>
-
-const PEOPLE=[
-{id:1,name:"M Faraz",code:"1001",start:"07:00"},
-{id:2,name:"Mirza Babar",code:"1002",start:"07:00"},
-{id:3,name:"Shahwaiz",code:"1003",start:"08:00"}
-];
-
-function todayDate(){
-return new Date().toISOString().split("T")[0];
-}
-
-function currentTime(){
-return new Date().toLocaleTimeString("en-GB",{
-hour:"2-digit",minute:"2-digit",second:"2-digit"
-});
-}
-
-function getData(){
-return JSON.parse(localStorage.getItem("attendanceData")||"{}");
-}
-
-function saveData(data){
-localStorage.setItem("attendanceData",JSON.stringify(data));
-}
-
-function getTodayRecords(){
-const data=getData();
-return data[todayDate()]||{};
-}
-
-function markAttendance(){
-
-const code=document.getElementById("code").value.trim();
-const message=document.getElementById("message");
-
-const person=PEOPLE.find(p=>p.code===code);
-
-if(!person){
-message.innerHTML=`<div class="warning">❌ Invalid personal code.</div>`;
-return;
-}
-
-const data=getData();
-const date=todayDate();
-
-if(!data[date]) data[date]={};
-
-const existing=data[date][person.id];
-const time=currentTime();
-
-if(!existing){
-
-const now=new Date();
-
-const current=now.getHours()*60+now.getMinutes();
-
-const parts=person.start.split(":");
-
-const official=parseInt(parts[0])*60+parseInt(parts[1]);
-
-const status=current<=official?"Present":"Late";
-
-data[date][person.id]={
-name:person.name,
-code:person.code,
-checkIn:time,
-checkOut:"",
-status:status
-};
-
-saveData(data);
-
-message.innerHTML=`
-<div class="success">
-<b>✅ CHECK-IN SUCCESSFUL</b><br><br>
-Name: ${person.name}<br>
-Time: ${time}<br>
-Status: ${status}
-</div>`;
-
-}
-
-else if(!existing.checkOut){
-
-existing.checkOut=time;
-saveData(data);
-
-message.innerHTML=`
-<div class="success">
-<b>✅ CHECK-OUT SUCCESSFUL</b><br><br>
-Name: ${person.name}<br>
-Check-in: ${existing.checkIn}<br>
-Check-out: ${time}
-</div>`;
-
-}
-
-else{
-
-message.innerHTML=`
-<div class="warning">
-⚠️ Attendance already completed today.<br><br>
-Check-in: ${existing.checkIn}<br>
-Check-out: ${existing.checkOut}
-</div>`;
-
-}
-
-document.getElementById("code").value="";
-updateAll();
-}
-
-function personHTML(person,record){
-
-if(!record){
-
-return `
-<div class="person">
-<div class="person-name">${person.name}</div>
-<div class="info">Code: ${person.code}</div>
-<span class="status absent">ABSENT</span>
-</div>`;
-
-}
-
-const css=record.status==="Late"?"late":"present";
-
-return `
-<div class="person">
-<div class="person-name">${person.name}</div>
-<div class="info">
-IN: ${record.checkIn||"-"}<br>
-OUT: ${record.checkOut||"-"}
-</div>
-<span class="status ${css}">${record.status}</span>
-</div>`;
-
-}
-
-function updateLists(){
-
-const records=getTodayRecords();
-let html="";
-
-PEOPLE.forEach(person=>{
-html+=personHTML(person,records[person.id]);
-});
-
-document.getElementById("dashboardList").innerHTML=html;
-document.getElementById("todayList").innerHTML=html;
-}
-
-function updateDashboard(){
-
-const records=getTodayRecords();
-
-let present=0;
-let late=0;
-
-PEOPLE.forEach(person=>{
-
-const record=records[person.id];
-
-if(record){
-
-if(record.status==="Present")present++;
-if(record.status==="Late")late++;
-
-}
-
-});
-
-document.getElementById("total").innerText=PEOPLE.length;
-document.getElementById("present").innerText=present;
-document.getElementById("late").innerText=late;
-document.getElementById("absent").innerText=
-PEOPLE.length-present-late;
-}
-
-function monthlyReport(){
-
-const data=getData();
-const month=new Date().toISOString().slice(0,7);
-
-document.getElementById("monthTitle").innerText=
-"Current month: "+month;
-
-let html="";
-
-PEOPLE.forEach(person=>{
-
-let present=0;
-let late=0;
-let total=0;
-
-Object.keys(data).forEach(date=>{
-
-if(!date.startsWith(month))return;
-
-const record=data[date][person.id];
-
-if(record){
-
-total++;
-
-if(record.status==="Present")present++;
-if(record.status==="Late")late++;
-
-}
-
-});
-
-html+=`
-<div class="person">
-<div class="person-name">${person.name}</div>
-<div class="info">
-Present: ${present} |
-Late: ${late} |
-Records: ${total}
-</div>
-</div>`;
-
-});
-
-document.getElementById("monthlyList").innerHTML=html;
-}
-
-function updateAll(){
-updateDashboard();
-updateLists();
-monthlyReport();
-}
-
-function showPage(page){
-
-document.querySelectorAll(".page").forEach(p=>{
-p.classList.remove("active");
-});
-
-document.getElementById(page).classList.add("active");
-
-document.querySelectorAll(".nav button").forEach(b=>{
-b.classList.remove("active");
-});
-
-const nav=document.getElementById(
-"nav"+page.charAt(0).toUpperCase()+page.slice(1)
-);
-
-if(nav)nav.classList.add("active");
-
-updateAll();
-}
-
-document.getElementById("date").innerText=
-new Date().toLocaleDateString("en-GB",{
-weekday:"long",
-day:"numeric",
-month:"long",
-year:"numeric"
-});
-
-updateAll();
-
-</script>
+  <div class="container">
+    <h1>Employee Attendance</h1>
+
+    <input type="text" id="employeeName" placeholder="Enter Employee Name">
+    <button class="add" onclick="addEmployee()">Add Employee</button>
+
+    <div class="counts">
+      Present: <b id="presentCount">0</b> |
+      Absent: <b id="absentCount">0</b>
+    </div>
+
+    <div id="employeeList"></div>
+
+    <button class="reset" onclick="resetAttendance()">Reset Attendance</button>
+  </div>
+
+  <script>
+    let employees = [];
+
+    function addEmployee() {
+      const input = document.getElementById("employeeName");
+      const name = input.value.trim();
+
+      if (name === "") {
+        alert("Please enter employee name");
+        return;
+      }
+
+      employees.push({
+        name: name,
+        status: ""
+      });
+
+      input.value = "";
+      displayEmployees();
+    }
+
+    function markAttendance(index, status) {
+      employees[index].status = status;
+      displayEmployees();
+    }
+
+    function displayEmployees() {
+      const list = document.getElementById("employeeList");
+      list.innerHTML = "";
+
+      employees.forEach((employee, index) => {
+        const div = document.createElement("div");
+        div.className = "employee";
+
+        div.innerHTML = `
+          <span class="name">${employee.name}</span>
+
+          <div>
+            <button class="present" onclick="markAttendance(${index}, 'Present')">
+              Present
+            </button>
+
+            <button class="absent" onclick="markAttendance(${index}, 'Absent')">
+              Absent
+            </button>
+          </div>
+
+          <span>
+            ${employee.status}
+          </span>
+        `;
+
+        list.appendChild(div);
+      });
+
+      updateCounts();
+    }
+
+    function updateCounts() {
+      let present = 0;
+      let absent = 0;
+
+      employees.forEach(employee => {
+        if (employee.status === "Present") present++;
+        if (employee.status === "Absent") absent++;
+      });
+
+      document.getElementById("presentCount").textContent = present;
+      document.getElementById("absentCount").textContent = absent;
+    }
+
+    function resetAttendance() {
+      employees.forEach(employee => {
+        employee.status = "";
+      });
+
+      displayEmployees();
+    }
+  </script>
 
 </body>
 </html>
